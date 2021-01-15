@@ -11,9 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import spring.bot.calculator.config.ViberConfig;
-import spring.bot.calculator.model.*;
+import spring.bot.calculator.model.EventTypes;
+import spring.bot.calculator.model.MessageType;
+import spring.bot.calculator.model.RPNProcessor;
+import spring.bot.calculator.model.ViberMessageIn;
+import spring.bot.calculator.model.ViberMessageOut;
 import spring.bot.calculator.services.ViberService;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
@@ -68,7 +73,7 @@ public class ViberServiceImpl implements ViberService {
             return new ResponseEntity<>(jsonString, HttpStatus.OK);
         } else
         if (EventTypes.MESSAGE.equals(message.getEvent())) {
-            return sentMessage(message.getSender().getId(), evaluate(message.getMessage().getText()));
+            return sentMessage(message.getSender().getId(), calculate(message.getMessage().getText()));
         } else
         if (EventTypes.UNSUBSCRIBED.equals(message.getEvent())) {
             return sentMessage(message.getSender().getId(), "Unsubscribed");
@@ -79,10 +84,12 @@ public class ViberServiceImpl implements ViberService {
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
-    private String evaluate(String input) {
+    private String calculate(String input) {
         try {
             Queue<String> expression = RPNProcessor.convertToRPN(input);
-            return RPNProcessor.calculateExpression(expression);
+            Double result = RPNProcessor.calculateExpression(expression);
+            DecimalFormat formatter = new DecimalFormat("#.##");
+            return formatter.format(result);
         } catch (Exception e) {
             return e.getMessage();
         }

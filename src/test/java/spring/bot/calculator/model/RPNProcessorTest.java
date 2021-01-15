@@ -29,23 +29,23 @@ class RPNProcessorTest {
     @Test
     void calculateExpression() {
         Queue<String> rpnExpression = RPNProcessor.convertToRPN("3 + (4 * 2) / (1 - 5)^2");
-        String result = RPNProcessor.calculateExpression(rpnExpression);
-        assertEquals("3.5", result);
+        Double result = RPNProcessor.calculateExpression(rpnExpression);
+        assertEquals(3.5, result);
 
         rpnExpression = RPNProcessor.convertToRPN("5*5*(4-2)^3");
         result = RPNProcessor.calculateExpression(rpnExpression);
-        assertEquals("200.0", result);
+        assertEquals(200., result);
 
         rpnExpression = RPNProcessor.convertToRPN("10*(2+15)");
         result = RPNProcessor.calculateExpression(rpnExpression);
-        assertEquals("170.0", result);
+        assertEquals(170., result);
 
         rpnExpression = RPNProcessor.convertToRPN("0.5*7");
         result = RPNProcessor.calculateExpression(rpnExpression);
-        assertEquals("3.5", result);
+        assertEquals(3.5, result);
 
         rpnExpression = RPNProcessor.convertToRPN("(6+10-4)/(1+1*2)+1");
         result = RPNProcessor.calculateExpression(rpnExpression);
-        assertEquals("5.0", result);
+        assertEquals(5., result);
     }
 }

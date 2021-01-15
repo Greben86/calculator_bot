@@ -1,8 +1,11 @@
 package spring.bot.calculator.model;
 
+import lombok.AllArgsConstructor;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.function.BinaryOperator;
 
 public class RPNProcessor {
     private static final char OPEN_BRACKET = '(';
@@ -26,12 +29,12 @@ public class RPNProcessor {
                     output.add(buffer.toString());
                     buffer = new StringBuilder();
                 }
-            if (isOpenBracket(c)) {
+            if (OPEN_BRACKET == c) {
                 operations.push(c);
             }
-            if (isCloseBracket(c)) {
+            if (CLOSE_BRACKET == c) {
                 while (!operations.empty()) {
-                    if (isOpenBracket(operations.peek())) {
+                    if (OPEN_BRACKET == operations.peek()) {
                         operations.pop();
                         break;
                     }
@@ -55,35 +58,49 @@ public class RPNProcessor {
         return output;
     }
 
-    public static String calculateExpression(final Queue<String> expression) {
-        Stack<String> stack = new Stack<>();
+    public static Double calculateExpression(final Queue<String> expression) {
+        Stack<Double> stack = new Stack<>();
         while (expression.peek() != null) {
-            if (isDigit(expression.peek())) {
-                stack.push(expression.poll());
+            String item = expression.poll();
+            if (isDigit(item)) {
+                stack.push(Double.parseDouble(item));
             } else {
-                double y = Double.parseDouble(stack.pop());
-                double x = Double.parseDouble(stack.pop());
-                double z = executeOperation(expression.poll(), x, y);
-                stack.push(String.valueOf(z));
+                PairHolder<Double> holder = getTwoOperand(stack);
+                stack.push(executeOperation(item, holder));
             }
         }
         return stack.pop();
     }
 
-    private static double executeOperation(final String operation, final double operand1, final double operand2) {
+    private static PairHolder<Double> getTwoOperand(final Stack<Double> stack) {
+        Double right = getOneOperand(stack);
+        Double left = getOneOperand(stack);
+
+        return new PairHolder<>(left, right);
+    }
+
+    private static Double getOneOperand(final Stack<Double> stack) {
+        if (stack.empty()) {
+            throw new IllegalStateException();
+        }
+
+        return stack.pop();
+    }
+
+    private static double executeOperation(final String operation, final PairHolder<Double> holder) {
         switch (operation) {
             case "+":
-                return operand1 + operand2;
+                return holder.apply(Double::sum);
             case "-":
-                return operand1 - operand2;
+                return holder.apply((a, b) -> a - b);
             case "*":
-                return operand1 * operand2;
+                return holder.apply((a, b) -> a * b);
             case "/":
-                return operand1 / operand2;
+                return holder.apply((a, b) -> a / b);
             case "^":
-                return Math.pow(operand1, operand2);
+                return holder.apply(Math::pow);
             default:
-                return 0.;
+                throw new IllegalStateException();
         }
     }
 
@@ -103,14 +120,6 @@ public class RPNProcessor {
         return ALL_OPERATIONS.indexOf(value) >= 0;
     }
 
-    private static boolean isOpenBracket(final char value) {
-        return OPEN_BRACKET == value;
-    }
-
-    private static boolean isCloseBracket(final char value) {
-        return CLOSE_BRACKET == value;
-    }
-
     private static int getPriority(final char operation) {
         switch (operation) {
             case '^':
@@ -126,6 +135,16 @@ public class RPNProcessor {
                 return 4;
             default:
                 return 0;
+        }
+    }
+
+    @AllArgsConstructor
+    private static class PairHolder<T> {
+        private final T leftOperand;
+        private final T rightOperand;
+
+        public T apply(BinaryOperator<T> operator) {
+            return operator.apply(leftOperand, rightOperand);
         }
     }
 }
