@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import spring.bot.calculator.component.ExpressionManager;
 import spring.bot.calculator.model.ViberMessageIn;
 import spring.bot.calculator.services.ViberService;
 
@@ -25,6 +26,9 @@ class ViberBotControllerTest {
 
     @MockBean
     private ViberService viberService;
+
+    @MockBean
+    private ExpressionManager expressionManager;
 
     @Test
     void botProcess() throws Exception {

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import spring.bot.calculator.model.ViberMessageIn;
+import spring.bot.calculator.services.CalculateService;
 import spring.bot.calculator.services.ViberService;
 
 @RestController
@@ -19,9 +20,18 @@ public class ViberBotController {
     @Autowired
     private ViberService viberService;
 
+    @Autowired
+    private CalculateService calculateService;
+
     @GetMapping("/ping")
     public ResponseEntity<String> ping() {
         return new ResponseEntity<>("ping", HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/test", consumes = MediaType.TEXT_PLAIN_VALUE,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> test(@RequestBody String expression) {
+        return new ResponseEntity<>(calculateService.calculate(expression), HttpStatus.OK);
     }
 
     @GetMapping(value = "/setwebhook", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,10 +1,11 @@
 package spring.bot.calculator.model;
 
 import org.junit.jupiter.api.Test;
+import spring.bot.calculator.component.RPNProcessor;
 
 import java.util.Queue;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RPNProcessorTest {
 

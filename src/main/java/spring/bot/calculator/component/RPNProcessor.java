@@ -1,4 +1,4 @@
-package spring.bot.calculator.model;
+package spring.bot.calculator.component;
 
 import lombok.AllArgsConstructor;
 

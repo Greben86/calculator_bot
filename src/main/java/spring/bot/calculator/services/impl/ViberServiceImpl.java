@@ -13,15 +13,12 @@ import org.springframework.web.client.RestTemplate;
 import spring.bot.calculator.config.ViberConfig;
 import spring.bot.calculator.model.EventTypes;
 import spring.bot.calculator.model.MessageType;
-import spring.bot.calculator.model.RPNProcessor;
 import spring.bot.calculator.model.ViberMessageIn;
 import spring.bot.calculator.model.ViberMessageOut;
 import spring.bot.calculator.services.ViberService;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Queue;
 
 @Service
 public class ViberServiceImpl implements ViberService {
@@ -32,6 +29,9 @@ public class ViberServiceImpl implements ViberService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private CalculateServiceImpl calculateService;
 
     private HttpHeaders getHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -73,7 +73,7 @@ public class ViberServiceImpl implements ViberService {
             return new ResponseEntity<>(jsonString, HttpStatus.OK);
         } else
         if (EventTypes.MESSAGE.equals(message.getEvent())) {
-            return sentMessage(message.getSender().getId(), calculate(message.getMessage().getText()));
+            return sentMessage(message.getSender().getId(), calculateService.calculate(message.getMessage().getText()));
         } else
         if (EventTypes.UNSUBSCRIBED.equals(message.getEvent())) {
             return sentMessage(message.getSender().getId(), "Unsubscribed");
@@ -82,17 +82,6 @@ public class ViberServiceImpl implements ViberService {
             return sentMessage(message.getSender().getId(), "Welcome");
         }
         return new ResponseEntity<>("", HttpStatus.OK);
-    }
-
-    private String calculate(String input) {
-        try {
-            Queue<String> expression = RPNProcessor.convertToRPN(input);
-            Double result = RPNProcessor.calculateExpression(expression);
-            DecimalFormat formatter = new DecimalFormat("#.##");
-            return formatter.format(result);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
     }
 
     private List<EventTypes> getSupportedEventTypes() {
