@@ -13,8 +13,8 @@ public class OperationMultiplication extends AbstractOperation {
 
     @Override
     public double calculate(Stack<Double> stack) {
-        Double b = getNextOperand(stack);
-        Double a = getNextOperand(stack);
+        Double b = getOperand(stack);
+        Double a = getOperand(stack);
         return a * b;
     }
 }

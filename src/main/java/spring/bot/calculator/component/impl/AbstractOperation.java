@@ -12,7 +12,7 @@ public abstract class AbstractOperation implements MathOperation {
     private final String signature;
     private final int priority;
 
-    protected Double getNextOperand(Stack<Double> stack) {
+    protected Double getOperand(Stack<Double> stack) {
         if (stack.empty()) {
             throw new IllegalStateException();
         }

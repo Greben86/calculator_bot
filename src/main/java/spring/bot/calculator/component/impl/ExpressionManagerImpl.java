@@ -51,8 +51,8 @@ public class ExpressionManagerImpl implements ExpressionManager {
                 }
                 if (!Character.isWhitespace(c)) {
                     output.add(String.valueOf(c));
+                    isBeginOperation = true;
                 }
-                isBeginOperation = true;
             }
         }
         if (buffer.length() > 0) {
