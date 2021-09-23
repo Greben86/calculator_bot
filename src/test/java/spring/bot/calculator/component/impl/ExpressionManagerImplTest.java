@@ -80,5 +80,20 @@ class ExpressionManagerImplTest {
         assertEquals(200., calc("5*5*(4-2)^3"));
         assertEquals(170., calc("10*(2+15)"));
         assertEquals(5., calc("(6+10-4)/(1+1*2)+1"));
+        assertEquals(-5., calc("-(2+3)"));
+        assertEquals(-9., calc("-(2+3*2)-1"));
+    }
+
+    @Test
+    void calculateFactorial() {
+        assertEquals(120., calc("5!"));
+        assertEquals(130., calc("5!+10"));
+        assertEquals(120., calc("(3+2)!"));
+        assertEquals(120., calc("(2.5*2)!"));
+        assertEquals(360., calc("3*5!"));
+        assertEquals(5., calc("3+2!"));
+        assertEquals(43200., calc("3*5!^2"));
+        assertEquals(129600., calc("(3*5!)^2"));
+        assertEquals(-129600., calc("-(3*5!)^2"));
     }
 }
