@@ -73,7 +73,9 @@ public class ViberServiceImpl implements ViberService {
             return new ResponseEntity<>(jsonString, HttpStatus.OK);
         } else
         if (EventTypes.MESSAGE.equals(message.getEvent())) {
-            return sentMessage(message.getSender().getId(), calculateService.calculate(message.getMessage().getText()));
+            String result = message.getMessage().getText();
+            result = result + " = " + calculateService.calculate(result);
+            return sentMessage(message.getSender().getId(), result);
         } else
         if (EventTypes.UNSUBSCRIBED.equals(message.getEvent())) {
             return sentMessage(message.getSender().getId(), "Unsubscribed");
