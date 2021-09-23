@@ -1,16 +1,16 @@
 package spring.bot.calculator.component.impl;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import spring.bot.calculator.component.MathOperation;
 
 import java.util.Stack;
 
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public abstract class AbstractOperation implements MathOperation {
-    private final String signature;
-    private final int priority;
+    private String signature;
+    private Integer priority;
 
     protected Double getOperand(Stack<Double> stack) {
         if (stack.empty()) {

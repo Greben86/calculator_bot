@@ -4,6 +4,6 @@ import java.util.Stack;
 
 public interface MathOperation {
     String getSignature();
-    int getPriority();
+    Integer getPriority();
     double calculate(Stack<Double> stack);
 }
