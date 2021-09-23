@@ -51,7 +51,7 @@ public class ExpressionManagerImpl implements ExpressionManager {
                 }
                 if (!Character.isWhitespace(c)) {
                     output.add(String.valueOf(c));
-                    isBeginOperation = true;
+                    isBeginOperation = !CLOSE_BRACKET.equals(String.valueOf(c));
                 }
             }
         }

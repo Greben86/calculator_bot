@@ -13,6 +13,10 @@ public class OperationSubtraction extends AbstractOperation {
     @Override
     public double calculate(Stack<Double> stack) {
         Double b = getOperand(stack);
+        if (stack.empty()) {
+            return -b;
+        }
+
         Double a = getOperand(stack);
         return a - b;
     }
