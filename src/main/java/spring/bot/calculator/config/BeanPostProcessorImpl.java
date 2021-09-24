@@ -1,15 +1,15 @@
 package spring.bot.calculator.config;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import spring.bot.calculator.component.OperationInfo;
 import spring.bot.calculator.component.impl.AbstractOperation;
 
-import java.lang.reflect.Field;
-
 @Component
 public class BeanPostProcessorImpl implements BeanPostProcessor {
+
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         OperationInfo annotation = bean.getClass().getAnnotation(OperationInfo.class);
@@ -17,13 +17,9 @@ public class BeanPostProcessorImpl implements BeanPostProcessor {
             try {
                 String name = annotation.name();
                 int priority = annotation.priority().getPriority();
-                Field signatureField = bean.getClass().getSuperclass().getDeclaredField("signature");
-                Field priorityField = bean.getClass().getSuperclass().getDeclaredField("priority");
-                signatureField.setAccessible(true);
-                priorityField.setAccessible(true);
-                signatureField.set(bean, name);
-                priorityField.set(bean, priority);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+                FieldUtils.writeField(bean, "signature", name, true);
+                FieldUtils.writeField(bean, "priority", priority, true);
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
